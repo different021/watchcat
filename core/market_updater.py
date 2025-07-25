@@ -1,8 +1,8 @@
 import time
 from rich.console import Console
-from core2.market_clock import MarketClock
+from core.market_clock import MarketClock
 from loader.stock_loader import load_stock_infos
-from core2.fetcher import fetch_data, render_table
+from core.fetcher import fetch_data, render_table
 
 
 class MarketUpdater:

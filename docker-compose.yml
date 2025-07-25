@@ -1,35 +1,19 @@
 services:
   watchcat:
-    build: .
     # image: watchcat
+    build: .
+    env_file:
+      - .env
     container_name: watchcat
     volumes:
       - ./:/app
     working_dir: /app
-    command: python3 live2.py
+    command: python3 live.py
     logging:
       driver: "json-file"
       options:
         max-size: "10m"    # 하나의 로그 파일 최대 크기
         max-file: "5"      # 최대 파일 수
-
-  updater:
-    build: .
-    container_name: watchcat-updater
-    volumes:
-      - ./:/app
-    working_dir: /app
-    command: python3 updater.py
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"    # 하나의 로그 파일 최대 크기
-        max-file: "5"      # 최대 파일 수
-    environment:
-      - INFLUXDB_URL=http://influxdb:8086
-      - INFLUXDB_TOKEN=watchcat-token
-      - INFLUXDB_ORG=watchcat_org
-      - INFLUXDB_BUCKET=watchcat
 
   influxdb:
     image: influxdb:2.7

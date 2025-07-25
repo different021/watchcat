@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from rich.console import Console
 from rich.table import Table
 from datetime import datetime, timezone, timedelta
+from core.update import write_to_influx
 
 NULL = "N/A"
 console = Console()
@@ -38,6 +39,7 @@ def fetch_data(infos: dict):
             current = get_current_price(soup)
 
             rows.append([name, prev, open_, current])
+            write_to_influx(name, prev, open_, current)
             time.sleep(0.3)
         except Exception:
             rows.append([name, NULL, NULL, NULL])

@@ -13,8 +13,3 @@ COPY pyproject.toml poetry.lock /app/
 RUN poetry config virtualenvs.create false \
  && poetry install --no-root
 
-# 나머지 코드는 로컬에서 마운트하므로 복사 생략
-# COPY . /app  ❌ (제거 또는 주석 처리)
-
-# 실행 명령은 Compose에서 override 가능
-# CMD ["python3", "live.py"]

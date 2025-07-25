@@ -1,39 +1,54 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, time, timedelta, timezone
 
 class MarketClock:
     def __init__(self):
         self.KST = timezone(timedelta(hours=9))
-        self.last_open_date = None
-        self.last_close_date = None
-        self.last_1530_date = None
+        self._market_open = self._parse_time("09:00")
+        self._market_close = self._parse_time("15:30")
+        self._market_final = self._parse_time("15:31")  # 장 종료 알림 시점
 
-    def now(self):
+    def now(self) -> datetime:
+        """현재 시각 (datetime, KST 기준)"""
         return datetime.now(self.KST)
+    
+    def formatted_now(self) -> str:
+        """표준 출력용 현재 시각 문자열 ('YYYY-MM-DD HH:MM:SS')"""
+        return self.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    def time_now(self) -> time:
+        """현재 시각 (time only, KST 기준)"""
+        return self.now().time()
 
-    def today_str(self):
+    def today_str(self) -> str:
+        """오늘 날짜 문자열 ('YYYY-MM-DD')"""
         return self.now().strftime("%Y-%m-%d")
 
-    def is_market_open(self):
-        t = self.now().time()
-        return datetime.strptime("09:00", "%H:%M").time() <= t <= datetime.strptime("15:30", "%H:%M").time()
+    def is_market_open_time(self) -> bool:
+        """지금이 장중인가? (09:00 ~ 15:30 포함)"""
+        now = self.time_now()
+        return self._market_open <= now <= self._market_close
 
-    def should_open(self):
-        t = self.now().time()
-        return t >= datetime.strptime("09:00", "%H:%M").time() and self.last_open_date != self.today_str()
+    def is_before_market(self) -> bool:
+        """지금이 장 시작 전인가? (09:00 이전)"""
+        return self.time_now() < self._market_open
 
-    def should_close(self):
-        t = self.now().time()
-        return t >= datetime.strptime("15:31", "%H:%M").time() and self.last_close_date != self.today_str()
+    def is_after_close(self) -> bool:
+        """지금이 장 종료 이후인가? (15:31 이후)"""
+        return self.time_now() >= self._market_final
 
-    def should_print_1530(self):
-        t = self.now().time()
-        return t >= datetime.strptime("15:30", "%H:%M").time() and self.last_1530_date != self.today_str()
+    def market_open_time(self) -> time:
+        """장 시작 시각 (time)"""
+        return self._market_open
 
-    def mark_open(self):
-        self.last_open_date = self.today_str()
+    def market_close_time(self) -> time:
+        """장 종료 시각 (time)"""
+        return self._market_close
 
-    def mark_close(self):
-        self.last_close_date = self.today_str()
+    def market_final_cutoff_time(self) -> time:
+        """장 종료 알림 기준 시각 (15:31)"""
+        return self._market_final
 
-    def mark_1530(self):
-        self.last_1530_date = self.today_str()
+    @staticmethod
+    def _parse_time(tstr: str) -> time:
+        """'HH:MM' 문자열을 time 객체로 변환"""
+        return datetime.strptime(tstr, "%H:%M").time()
