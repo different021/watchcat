@@ -21,3 +21,5 @@ __pycache__/
 *.sqlite3
 *.db
 *.bak
+
+stocks.csv
