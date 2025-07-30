@@ -57,20 +57,6 @@ def search_stock_code(keyword: str, stock_dict: dict) -> dict:
     keyword = keyword.strip()
     return {name: code for name, code in stock_dict.items() if keyword in name}
 
-# # 📌 메인 실행
-# def main():
-#     while True:
-#         stock_dict = load_stock_codes(CSV_PATH)
-#         keyword = input("종목명을 입력하세요: ").strip()
-#         result = search_stock_code(keyword, stock_dict)
-
-#         if not result:
-#             print("🔍 검색 결과가 없습니다.")
-#         else:
-#             for name, code in result.items():
-#                 print(f" - {name} : {code}")
-
-
 def main():
     stock_dict = load_stock_codes(CSV_PATH)
 

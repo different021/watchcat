@@ -1,16 +1,21 @@
+--DROP TABLE IF EXISTS 
+--    realtime.quotes,
+--    summary.daily_prices,
+--    meta.symbols
+--CASCADE;
+
 CREATE SCHEMA IF NOT EXISTS meta;
 
 CREATE TABLE meta.symbols (
-    symbol         VARCHAR(6) PRIMARY KEY,  -- KRX 종목 코드 (ex: 069500)
-    name           TEXT NOT NULL,           -- 종목명
-    listing_date   DATE,                    -- 상장일
-    settle_month   INTEGER,                 -- 결산월 (보통 12)
-    sector         TEXT,                    -- 산업 구분 (ETF는 대체로 없음)
-    industry       TEXT,                    -- 산업군 (ETF는 대체로 없음)
-    category       INTEGER,                 -- ETF 유형 (예: 1=지수형, 4=해외지수 등)
-    homepage       TEXT,                    -- 운용사 홈페이지 (optional)
-    region         TEXT                     -- 지역 구분 (대개 비어있음)
+    symbol        VARCHAR(6) PRIMARY KEY,
+    name          TEXT NOT NULL,
+    isu_cd        TEXT,             -- KRX 내부 종목 코드
+    market        TEXT,             -- KOSPI, KOSDAQ, KONEX
+    dept          TEXT,             -- KRX 분류 세부 그룹
+    stocks        BIGINT,           -- 발행 주식 수
+    market_id     TEXT              -- STK, KSQ 등 내부 코드
 );
+
 
 CREATE SCHEMA IF NOT EXISTS realtime;
 
