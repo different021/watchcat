@@ -1,8 +1,6 @@
-
 def insert_quotes(pool, records):
     if not records:
-        print("⚠ 저장할 데이터가 없습니다.")
-        return
+        raise ValueError("저장할 데이터가 없습니다.")
 
     conn = pool.getconn()
     try:
@@ -20,6 +18,9 @@ def insert_quotes(pool, records):
 
             cur.execute(query, flat_values)
         conn.commit()
-        print(f"💾 한 쿼리로 {len(records)}건 삽입 완료")
+        return len(records)
+    except Exception as e:
+        conn.rollback()
+        raise  # 호출자에게 예외 그대로 전달
     finally:
         pool.putconn(conn)
