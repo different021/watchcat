@@ -22,7 +22,8 @@ dependencies = [
     "httpx (>=0.28.1,<0.29.0)",
     "lxml (>=6.0.0,<7.0.0)",
     "finance-datareader (>=0.9.96,<0.10.0)",
-    "sqlalchemy (>=2.0.42,<3.0.0)"
+    "sqlalchemy (>=2.0.42,<3.0.0)",
+    "python-dotenv (>=1.1.1,<2.0.0)"
 ]
 
 [tool.poetry.dependencies]
