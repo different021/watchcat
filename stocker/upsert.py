@@ -1,18 +1,18 @@
 # upsert.py
-
+import os
 import pandas as pd
 import FinanceDataReader as fdr
 from sqlalchemy import create_engine, Table, MetaData
 from sqlalchemy.dialects.postgresql import insert
 from urllib.parse import quote_plus
 
-# 🔧 PostgreSQL 접속 설정 (이 부분만 수정하시면 됩니다)
-DB_USER = "mcesos"
-# DB_PASS = "mcesos2024@"
-DB_PASS = quote_plus("mcesos2024@")
-DB_HOST = "10.2.0.24"
-DB_PORT = 5432
-DB_NAME = "gisdb"
+# config
+DB_USER = os.getenv("DB_USER", "mcesos")
+DB_PASS_RAW = os.getenv("DB_PASS", "mcesos2024@")
+DB_PASS = quote_plus(DB_PASS_RAW)
+DB_HOST = os.getenv("DB_HOST", "10.2.0.24")
+DB_PORT = os.getenv("DB_PORT", "5432")
+DB_NAME = os.getenv("DB_NAME", "gisdb")
 
 DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}?host={DB_HOST}"
 engine = create_engine(DATABASE_URL)
