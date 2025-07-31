@@ -4,6 +4,7 @@ from dbpool import create_pool
 from db_insert import insert_quotes
 from collector import fetch_all_quotes
 
+print("📈 주식 데이터 수집 및 저장 프로그램 시작")
 
 def is_market_open(now: datetime) -> bool:
     """현재 시간이 한국 주식 시장 개장 시간인지 여부를 반환"""
@@ -13,6 +14,9 @@ def is_market_open(now: datetime) -> bool:
     return is_weekday and market_start <= now.time() <= market_end
 
 def main():
+    now = datetime.now()
+    start = now.strftime('%Y-%m-%d %H:%M:%S')
+    print(f"[{start}] 데이터 수집 시작")
     pool = create_pool()
 
     while True:

@@ -17,6 +17,24 @@ services:
     networks:
       - watchcat-net
 
+  updater:
+    build: .
+    container_name: updater
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: python3 -u stocker/updater.py
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - watchcat-net
+
+
   influxdb:
     image: influxdb:2.7
     container_name: influxdb
@@ -47,9 +65,24 @@ services:
     networks:
       - watchcat-net
 
+  db:
+    image: postgis/postgis:15-3.3  # PostgreSQL 15 + PostGIS 3.3
+    container_name: postgis
+    environment:
+      POSTGRES_DB: gisdb
+      POSTGRES_USER: mcesos
+      POSTGRES_PASSWORD: mcesos2024@
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - watchcat-net
+
 volumes:
   influxdb-data:
   grafana-storage:
+  pgdata:
 
 networks:
   watchcat-net:
