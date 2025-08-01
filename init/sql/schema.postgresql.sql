@@ -47,3 +47,20 @@ CREATE TABLE summary.daily_prices (
     amount         BIGINT,                             -- 거래대금
     PRIMARY KEY (symbol, date)
 );
+
+CREATE SCHEMA IF NOT EXISTS ops;
+
+CREATE TABLE ops.failed_realtime_batches (
+    id            BIGSERIAL PRIMARY KEY,
+    ts            TIMESTAMP NOT NULL,         -- 수집 타임스탬프
+    error_code    TEXT NOT NULL,              -- 실패 코드 (E01 등)
+    reason        TEXT,                       -- PostgreSQL 예외 메시지 등
+    failed_data   JSONB,                      -- 실패한 symbol 리스트 or 전체 레코드
+    created_at    TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS ops.error_codes (
+    code         TEXT PRIMARY KEY,     -- 예: 'E01'
+    name         TEXT NOT NULL,        -- 예: 'SYMBOL_NOT_FOUND'
+    description  TEXT                  -- 예: 'meta.symbols 테이블에 존재하지 않는 종목 코드'
+);
