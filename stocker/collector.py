@@ -1,10 +1,12 @@
 import FinanceDataReader as fdr
 from datetime import datetime
 from typing import List, Tuple
+from zoneinfo import ZoneInfo  # Python 3.9+
 
-def fetch_all_quotes():
+def fetch_all_quotes() -> List[Tuple]:
     df = fdr.StockListing("KRX")
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Asia/Seoul")).replace(tzinfo=None)
+
     records = []
     failed_symbols = []
 
@@ -26,7 +28,6 @@ def fetch_all_quotes():
             failed_symbols.append((row.get("Code"), str(e)))
 
     if failed_symbols:
-        # 필요한 경우 사용자 정의 예외로 전달 가능
         raise RuntimeError(f"총 {len(failed_symbols)}개 종목 변환 실패: {failed_symbols[:5]}...")
 
     return records
@@ -52,8 +53,7 @@ def fetch_symbol_metadata(symbols: List[str]) -> List[Tuple[str, str, str, str, 
                 row["MarketId"],     # market_id (STK, KSQ 등)
             )
             result.append(record)
-        except Exception as e:
-            # 로깅 또는 에러 리포트용으로 남겨둘 수 있음
+        except Exception:
             continue
 
     return result
